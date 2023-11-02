@@ -12,7 +12,7 @@ def phone_validate_func(phone_number):
         )
 
 
-class UserRegistrationSerializer(serializers.Serializer):
+class UserSerializer(serializers.Serializer):
     email = serializers.EmailField(required=False)
     username = serializers.CharField(required=False)
     password = serializers.CharField()
@@ -23,7 +23,6 @@ class UserRegistrationSerializer(serializers.Serializer):
             return value
 
     def validate_username(self, value):
-        print('validate_username', value)
         if value is None:
             return value
 
@@ -49,7 +48,11 @@ class UserRegistrationSerializer(serializers.Serializer):
         return attrs
 
     def create(self, validated_data):
-        User.objects.create(**validated_data)
+        return User.objects.create(**validated_data)
 
-
+    def update(self, instance, validated_data):
+        for field in validated_data:
+            setattr(instance, field, validated_data[field])
+            print(instance)
+            return instance
 
